@@ -26,7 +26,7 @@ export const titleStyles = style({
 
 export const levelsStyles = style({
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   justifyContent: "center",
   alignContent: "center",
   alignItems: "center",
@@ -34,16 +34,15 @@ export const levelsStyles = style({
 });
 
 export const levelButtonStyles = style({
-  display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  textTransform: "uppercase",
   margin: 15,
   borderRadius: 15,
   border: `solid 2px ${primaryAccent}`,
   backgroundColor: "#fff",
   height: 88,
   width: 231,
-  textTransform: "uppercase",
   color: primaryAccent,
   fontSize: 18,
   fontWeight: 800,
@@ -68,7 +67,6 @@ export const selectedLevelStyles = style({
 });
 
 export const nextCardButtonStlyes = style({
-  display: "flex",
   alignItems: "center",
   justifyContent: "center",
   margin: 25,
@@ -95,6 +93,5 @@ export const questionStyles = style({
   flexDirection: "column",
   justifyContent: "center",
   width: "26rem",
-  textTransform: "uppercase",
   alignItems: "center",
 });

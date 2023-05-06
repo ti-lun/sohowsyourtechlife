@@ -7,7 +7,6 @@ export const cardStyles = style({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  textTransform: "uppercase",
   transition: "transform 0.1s ease-in-out",
   ":hover": {
     transform: "scale(1.02)",

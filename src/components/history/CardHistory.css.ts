@@ -13,7 +13,6 @@ export const historyStyles = style({
 });
 
 export const historyTitleStyles = style({
-  textTransform: "uppercase",
   color: primaryAccent,
   fontSize: 18,
   fontWeight: 800,
