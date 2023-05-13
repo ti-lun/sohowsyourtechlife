@@ -133,3 +133,11 @@ export const smallButtonStyles = style({
     },
   }
 });
+
+export const alignCenter = style({
+  textAlign: "center"
+});
+
+export const alignLeft = style({
+  textAlign: "left"
+});

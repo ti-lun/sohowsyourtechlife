@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { scaleDown as Menu } from "react-burger-menu";
+import { scaleDown as Menu, Styles } from "react-burger-menu";
 
 import { levelFour, levelOne, levelThree, levelTwo } from "./assets/levels";
 import Card from "./components/card/Card";
@@ -18,7 +18,8 @@ import {
   selectedLevelStyles,
   titleStyles,
   textInputStyles,
-  smallButtonStyles
+  smallButtonStyles,
+  alignCenter
 } from "./styles/app.css";
 
 function shuffle<T>(array: T[]) {
@@ -41,7 +42,7 @@ function shuffle<T>(array: T[]) {
   return array;
 }
 
-const styles = {
+const styles : any = {
   bmBurgerButton: {
     position: 'fixed',
     width: '3%',
@@ -92,12 +93,13 @@ function App() {
     levelFour: 4
   };
 
-  const IntToLevelKey = {
-    1: "levelOne",
-    2: "levelTwo",
-    3: "levelThree",
-    4: "levelFour"
-  };
+  const IntToLevelKey = [
+    levelOne,
+    levelOne,
+    levelTwo,
+    levelThree,
+    levelFour
+  ];
 
   const [gameState, setGameState] = useState(levels);
 
@@ -164,7 +166,7 @@ function App() {
     if (!skip) {
       let p1 = playersThisRound[0]; 
       let p2 = playersThisRound[1];
-      let p3 = null;
+      let p3 = "";
   
       let updatedPlayersThisRound = [];
   
@@ -183,8 +185,11 @@ function App() {
       else {
         setRoundStarted(false);
         setCurrRound(currRound + 1);
+
         if (currRound+1 > rounds) {
-          handleChangeLevel(IntToLevelKey[levelKeyToInt[currLevel]+1]);
+          let keys = Object.keys(levelKeyToInt)
+          let nextIndex = keys.indexOf(currLevel) + 1;
+          handleChangeLevel(keys[nextIndex] as keyof typeof levels);
           setCurrRound(1);
         }
       }
@@ -198,7 +203,7 @@ function App() {
     }
   };
 
-  const handleRemovePlayer = (e) => {
+  const handleRemovePlayer = (e: React.ChangeEvent<any>) => {
     console.log(e.currentTarget.value);
     let toFilter = e.currentTarget.value;
     setPlayers(current => current.filter((v) => v !== toFilter));
@@ -212,8 +217,14 @@ function App() {
 
   return (
     <div id="outer-container" style={{height: '100%'}}>
-      <Menu id='scaleDown' styles={styles} width={500} pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } right>
-        <div align="left">
+      <Menu
+        id="scaleDown"
+        styles={styles}
+        width={500}
+        pageWrapId={ "page-wrap" }
+        outerContainerId={ "outer-container" }
+        right>
+        <div className="alignLeft">
           <h2>Player Config</h2>
           <p><b>{players.length == 1 ? players.length + " player is " : players.length + " players are "}</b> playing with {rounds == 1 ? rounds + " card " : rounds + " cards "}for each player each round, making a total of {players.length * rounds} cards each level.</p>
           <ul><h3>{renderedNames}</h3></ul>
@@ -238,7 +249,7 @@ function App() {
         </div>
       </Menu>
       <main id="page-wrap">
-        <div className={titleStyles} align="center"><img src={logo} height={200}/><br/><b>so how's your tech life</b></div>
+        <div className={clsx(titleStyles, alignCenter)}><img src={logo} height={200}/><br/><b>so how's your tech life</b></div>
         <div className={appStyles}>
           <div>{buttons}</div>
           <div className={questionStyles}>
@@ -246,7 +257,7 @@ function App() {
           </div>
           <CardHistory cardHistory={cardHistory} />
 
-          <div align="center">
+          <div className={alignCenter}>
               <button className={nextCardButtonStlyes} onClick={() => handleNextCard()}>
                 next card
               </button>

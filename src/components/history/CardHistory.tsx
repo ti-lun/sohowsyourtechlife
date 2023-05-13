@@ -20,7 +20,7 @@ const CardHistory: FunctionComponent<CardHistoryProps> = ({ cardHistory }) => {
       <div className={cardContainerStyles}>
         <div className={cardContainerScrollStyles}>
           {cardHistory.map((qn) => (
-            <Card styleName={smallCardStyles} question={qn} key={qn+"history"} />
+            <Card styleName={smallCardStyles} question={qn} key={qn+"history"} contentTagsOn={false}/>
           ))}
         </div>
       </div>
