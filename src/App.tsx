@@ -17,6 +17,8 @@ import {
   questionStyles,
   selectedLevelStyles,
   titleStyles,
+  textInputStyles,
+  smallButtonStyles
 } from "./styles/app.css";
 
 function shuffle<T>(array: T[]) {
@@ -48,14 +50,19 @@ const styles = {
     top: 15,
   },
   bmBurgerBars: {
-    background: 'rgb(77, 114, 250)',
+    background: '#40916b',
   },
   bmMenu: {
     background: 'white',
     padding: '10%',
+    overflow: 'hidden'
   },
   bmMenuWrap: {
-    top: 0
+    position: 'fixed',
+    height: '100%'
+  },
+  bmCross: {
+    background: '#bdc3c7'
   },
   'page-wrap': {
     width: '100%',
@@ -64,6 +71,9 @@ const styles = {
     'justify-content': 'center',
     'align-items': 'center',
     padding: 0,
+  },
+  bmOverlay: {
+    background: 'rgba(0, 0, 0, 0.3)'
   }
 };
 
@@ -89,7 +99,7 @@ function App() {
     4: "levelFour"
   };
 
-  const [gameState] = useState(levels);
+  const [gameState, setGameState] = useState(levels);
 
   const [currLevel, setCurrLevel] = useState(Object.keys(levels)[0] as keyof typeof levels);
   const [currRound, setCurrRound] = useState(1);
@@ -101,6 +111,8 @@ function App() {
   const [newPlayer, setNewPlayer] = useState("");
   const [playersThisRound, setPlayersThisRound] = useState<string[]>([]);
   const [roundStarted, setRoundStarted] = useState(false);
+
+  const [contentTagsOn, setContentTagsOn] = useState(true);
 
   if (players.length > 0 && playersThisRound.length != players.length && !roundStarted) {
     setPlayersThisRound(shuffle(players));
@@ -128,7 +140,7 @@ function App() {
     </button>
   ));
 
-  function handleNextCard() {
+  function handleNextCard(skip=false) {
     const finalMessage = "You have finished this level!";
     if (gameState[currLevel].length === 1) {
       if (currCard === finalMessage) {
@@ -139,36 +151,42 @@ function App() {
         setCurrCard(finalMessage);
       }
     } else {
-      const tempHistory = [currCard, ...cardHistory];
-      setCardHistory(tempHistory);
-      gameState[currLevel].shift();
+      if (!skip) {
+        const tempHistory = [currCard, ...cardHistory];
+        setCardHistory(tempHistory);
+      }
+
+      let tempGameStateLevel = gameState[currLevel].slice(1);
+      setGameState({...gameState, [currLevel]: tempGameStateLevel});
       setCurrCard(gameState[currLevel][0]);
     }
 
-    let p1 = playersThisRound[0]; 
-    let p2 = playersThisRound[1];
-    let p3 = null;
-
-    let updatedPlayersThisRound = [];
-
-    if (players.length % 2 == 1) {
-      p3 = playersThisRound[2];
-      updatedPlayersThisRound = playersThisRound.filter((v) => v !== p1 && v !== p2 && v !== p3);
-    }
-    else {
-      updatedPlayersThisRound = playersThisRound.filter((v) => v !== p1 && v !== p2);
-    }
-    setPlayersThisRound(updatedPlayersThisRound);
-
-    if (updatedPlayersThisRound.length > 0) {
-      setRoundStarted(true);
-    }
-    else {
-      setRoundStarted(false);
-      setCurrRound(currRound + 1);
-      if (currRound+1 > rounds) {
-        handleChangeLevel(IntToLevelKey[levelKeyToInt[currLevel]+1]);
-        setCurrRound(1);
+    if (!skip) {
+      let p1 = playersThisRound[0]; 
+      let p2 = playersThisRound[1];
+      let p3 = null;
+  
+      let updatedPlayersThisRound = [];
+  
+      if (players.length % 2 == 1) {
+        p3 = playersThisRound[2];
+        updatedPlayersThisRound = playersThisRound.filter((v) => v !== p1 && v !== p2 && v !== p3);
+      }
+      else {
+        updatedPlayersThisRound = playersThisRound.filter((v) => v !== p1 && v !== p2);
+      }
+      setPlayersThisRound(updatedPlayersThisRound);
+  
+      if (updatedPlayersThisRound.length > 0) {
+        setRoundStarted(true);
+      }
+      else {
+        setRoundStarted(false);
+        setCurrRound(currRound + 1);
+        if (currRound+1 > rounds) {
+          handleChangeLevel(IntToLevelKey[levelKeyToInt[currLevel]+1]);
+          setCurrRound(1);
+        }
       }
     }
   }
@@ -186,45 +204,63 @@ function App() {
     setPlayers(current => current.filter((v) => v !== toFilter));
   }
 
-  let renderedNames = players.map(player => <div>{player} &nbsp; <button value={player} onClick={handleRemovePlayer}>Remove</button></div>);
+  const toggleContentTags = () => {
+    setContentTagsOn(!contentTagsOn);
+  };
+
+  let renderedNames = players.map(player => <div>{player} &nbsp; <button value={player} onClick={handleRemovePlayer} className={clsx(smallButtonStyles)}>Remove</button></div>);
 
   return (
     <div id="outer-container" style={{height: '100%'}}>
-      <Menu styles={styles} width="30%" pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } right>
-        <div>
+      <Menu id='scaleDown' styles={styles} width={500} pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } right>
+        <div align="left">
           <h2>Player Config</h2>
           <p><b>{players.length == 1 ? players.length + " player is " : players.length + " players are "}</b> playing with {rounds == 1 ? rounds + " card " : rounds + " cards "}for each player each round, making a total of {players.length * rounds} cards each level.</p>
-          <ul>{renderedNames}</ul>
-          <input value={newPlayer} onChange={(e) => setNewPlayer(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") handleAddPlayer() }} />
+          <ul><h3>{renderedNames}</h3></ul>
+          <input 
+            value={newPlayer} 
+            onChange={(e) => setNewPlayer(e.target.value)} 
+            onKeyDown={(e) => { if (e.key === "Enter") handleAddPlayer() }} 
+            className={clsx(textInputStyles)} />
           <br />
-          <button onClick={handleAddPlayer}>Add player</button>
-          <p><input value={rounds} type="number" min="1" onChange={(e) => setRounds(parseInt(e.currentTarget.value))}/><br/>cards per round of players</p>
+          <button onClick={handleAddPlayer} className={clsx(smallButtonStyles)}>Add player</button>
+          <p>
+            <input
+              value={rounds}
+              type="number"
+              min="1"
+              onChange={(e) => setRounds(parseInt(e.currentTarget.value))}
+              className={clsx(textInputStyles)} />
+            <br/>
+            cards each player answers
+          </p>
+          <p><input type="checkbox" onClick={toggleContentTags} defaultChecked/> Play with content tags</p>
         </div>
       </Menu>
-      <div id="page-wrap">
-        <div className={titleStyles} align="center"><img src={logo} height={200}/></div>
+      <main id="page-wrap">
+        <div className={titleStyles} align="center"><img src={logo} height={200}/><br/><b>so how's your tech life</b></div>
         <div className={appStyles}>
+          <div>{buttons}</div>
           <div className={questionStyles}>
-            <div className={titleStyles}>so how's your tech life</div>
-            <Card styleName={bigCardStyles} question={currCard} />
+            <Card key={currCard} styleName={bigCardStyles} question={currCard} contentTagsOn={contentTagsOn}/>
           </div>
-        
           <CardHistory cardHistory={cardHistory} />
+
           <div align="center">
               <button className={nextCardButtonStlyes} onClick={() => handleNextCard()}>
                 next card
               </button>
-              <div>{buttons}</div>
+              <button className={nextCardButtonStlyes} onClick={() => handleNextCard(true)}>
+                skip card
+              </button>
+
             <div>
-              <h2>Current level: {levelKeyToInt[currLevel]}, on round {currRound} that has {roundStarted ? "started" : "not started"} yet</h2>
-              <h2>Turn: {playersThisRound.length % 2 == 0 ? playersThisRound[0] + " and " + playersThisRound[1] : playersThisRound[0] + ", " + playersThisRound[1] + " and " + playersThisRound[2]}</h2>
+              <h3>Level {levelKeyToInt[currLevel]}, Round {currRound}</h3>
+              <h3>Turn: {playersThisRound.length % 2 == 0 ? playersThisRound[0] + " and " + playersThisRound[1] : playersThisRound[0] + ", " + playersThisRound[1] + " and " + playersThisRound[2]}</h3>
             </div>
-          
-            <h2>players in round</h2>
-            <ul>{playersThisRound.map((p) => <div>{p}</div>)}</ul>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

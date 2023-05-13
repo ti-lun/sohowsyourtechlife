@@ -20,8 +20,8 @@ export const historyTitleStyles = style({
 
 export const cardContainerStyles = style({
   height: "100%",
-  minHeight: "30rem",
-  maxHeight: "30rem",
+  minHeight: "25rem",
+  maxHeight: "25rem",
   width: "100%",
   display: "flex",
   flexDirection: "column",

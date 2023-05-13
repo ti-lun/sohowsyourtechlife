@@ -19,9 +19,10 @@ export const appStyles = style({
 export const titleStyles = style({
   color: primaryAccent,
   fontSize: 30,
-  marginTop: "3vh",
-  marginBottom: "3vh",
-  fontWeight: 800,
+  paddingTop: "3vh",
+  paddingBottom: "3vh",
+  fontWeight: 1600,
+  fontFamily: "Consolas"
 });
 
 export const levelsStyles = style({
@@ -34,6 +35,7 @@ export const levelsStyles = style({
 });
 
 export const levelButtonStyles = style({
+  display: "flex",
   alignItems: "center",
   justifyContent: "center",
   textTransform: "uppercase",
@@ -41,10 +43,10 @@ export const levelButtonStyles = style({
   borderRadius: 15,
   border: `solid 2px ${primaryAccent}`,
   backgroundColor: "#fff",
-  height: 88,
-  width: 231,
+  height: "6em",
+  width: "15em",
   color: primaryAccent,
-  fontSize: 18,
+  fontSize: 15,
   fontWeight: 800,
   fontFamily: "inherit",
   cursor: "pointer",
@@ -94,4 +96,40 @@ export const questionStyles = style({
   justifyContent: "center",
   width: "26rem",
   alignItems: "center",
+});
+
+export const textInputStyles = style({
+  border: `solid 2px ${primaryAccent}`,
+  fontSize: "2em",
+  color: primaryAccentMuted,
+  fontFamily: "Consolas",
+  borderRadius: 10,
+  padding: 10
+});
+
+export const smallButtonStyles = style({
+  alignItems: "center",
+  justifyContent: "center",
+  textTransform: "uppercase",
+  marginTop: 5,
+  borderRadius: 10,
+  border: `solid 2px ${primaryAccent}`,
+  backgroundColor: "#fff",
+  height: "2em",
+  width: "10em",
+  color: primaryAccent,
+  fontSize: 15,
+  fontWeight: 800,
+  fontFamily: "inherit",
+  cursor: "pointer",
+
+  ":hover": {
+    backgroundColor: primaryAccentMuted,
+    color: "rgb(240, 240, 240)",
+  },
+  selectors: {
+    "&:focus, &:active": {
+      outline: "none",
+    },
+  }
 });

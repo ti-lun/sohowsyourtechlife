@@ -12,11 +12,12 @@ globalStyle("html, body, #root", {
 });
 
 globalStyle("body", {
-  fontFamily: '"Biryani", sans-serif',
+  fontFamily: '"Trebuchet MS", sans-serif',
   vars: {
-    [primaryAccent]: "#c10016",
-    [primaryAccentMuted]: "#ad0014",
+    [primaryAccent]: "#40916b",
+    [primaryAccentMuted]: "#2b7050",
   },
+  color: primaryAccent
 });
 
 globalStyle("a, a:visited, a:hover", {
@@ -25,11 +26,11 @@ globalStyle("a, a:visited, a:hover", {
 
 // Scrollbar stuff
 globalStyle("::-webkit-scrollbar", {
-  width: 10,
+  width: 5
 });
 
 globalStyle("::-webkit-scrollbar-track", {
-  background: "white",
+  background: "none",
 });
 
 globalStyle("::-webkit-scrollbar-thumb", {
