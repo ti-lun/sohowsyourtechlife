@@ -12,7 +12,6 @@ import logo from "./assets/techlifegame.png";
 import {
   appStyles,
   levelButtonStyles,
-  levelsStyles,
   nextCardButtonStlyes,
   questionStyles,
   selectedLevelStyles,
@@ -78,6 +77,9 @@ const styles : any = {
   }
 };
 
+const finalCardForLevelMessage = "You have finished all the cards in this level!";
+const finalCardForGameMessage = "You've finished all the cards!  The game's done!  Refresh the page or update the player config to start over.";
+
 function App() {
   const levels = {
     levelOne: shuffle(levelOne),
@@ -92,14 +94,6 @@ function App() {
     levelThree: 3,
     levelFour: 4
   };
-
-  const IntToLevelKey = [
-    levelOne,
-    levelOne,
-    levelTwo,
-    levelThree,
-    levelFour
-  ];
 
   const [gameState, setGameState] = useState(levels);
 
@@ -116,8 +110,10 @@ function App() {
 
   const [contentTagsOn, setContentTagsOn] = useState(true);
 
-  if (players.length > 0 && playersThisRound.length != players.length && !roundStarted) {
-    setPlayersThisRound(shuffle(players));
+  if (players.length > 0 && playersThisRound.length != players.length*2 && !roundStarted) {
+    let playersOrder = shuffle(players);
+    let reversed = playersOrder.slice().reverse();
+    setPlayersThisRound(playersOrder.concat(reversed));
   }
 
   type levelKey = keyof typeof levels;
@@ -125,8 +121,7 @@ function App() {
   function handleChangeLevel(newLevel: levelKey) {
     setCurrLevel(newLevel);
     if (gameState[newLevel].length === 1) {
-      const finalMessage = "You have finished this level!";
-      setCurrCard(finalMessage);
+      setCurrCard(finalCardForLevelMessage);
     } else {
       setCurrCard(gameState[newLevel][0]);
     }
@@ -143,14 +138,14 @@ function App() {
   ));
 
   function handleNextCard(skip=false) {
-    const finalMessage = "You have finished this level!";
+    const finalCardForLevelMessage = "You have finished all the cards in this level!";
     if (gameState[currLevel].length === 1) {
-      if (currCard === finalMessage) {
+      if (currCard === finalCardForLevelMessage) {
         return;
       } else {
         const tempHistory = [currCard, ...cardHistory];
         setCardHistory(tempHistory);
-        setCurrCard(finalMessage);
+        setCurrCard(finalCardForLevelMessage);
       }
     } else {
       if (!skip) {
@@ -163,34 +158,32 @@ function App() {
       setCurrCard(gameState[currLevel][0]);
     }
 
-    if (!skip) {
-      let p1 = playersThisRound[0]; 
-      let p2 = playersThisRound[1];
-      let p3 = "";
-  
+    if (!skip) {  
       let updatedPlayersThisRound = [];
   
       if (players.length % 2 == 1) {
-        p3 = playersThisRound[2];
-        updatedPlayersThisRound = playersThisRound.filter((v) => v !== p1 && v !== p2 && v !== p3);
-      }
-      else {
-        updatedPlayersThisRound = playersThisRound.filter((v) => v !== p1 && v !== p2);
+        updatedPlayersThisRound = playersThisRound.slice(3);
+      } else {
+        updatedPlayersThisRound = playersThisRound.slice(2);
       }
       setPlayersThisRound(updatedPlayersThisRound);
-  
-      if (updatedPlayersThisRound.length > 0) {
+      
+      if (updatedPlayersThisRound.length >= 2) { // if there's still players to go through in the queue
         setRoundStarted(true);
-      }
-      else {
+      } else { // if there's no more players, we should go to the next level, or the game may be over
         setRoundStarted(false);
         setCurrRound(currRound + 1);
-
-        if (currRound+1 > rounds) {
+        // if we exceed the number of rounds the player has set and there are still levels to go,
+        // then let's go to the next level
+        if (currRound+1 > rounds && levelKeyToInt[currLevel]+1 <= Object.keys(levelKeyToInt).length) {
           let keys = Object.keys(levelKeyToInt)
           let nextIndex = keys.indexOf(currLevel) + 1;
           handleChangeLevel(keys[nextIndex] as keyof typeof levels);
           setCurrRound(1);
+        } // if this is the last level, end the game
+        else if (currRound+1 > rounds && levelKeyToInt[currLevel]+1 > Object.keys(levelKeyToInt).length) {
+          setCurrCard(finalCardForGameMessage);
+          setPlayers([]);
         }
       }
     }
@@ -249,25 +242,32 @@ function App() {
         </div>
       </Menu>
       <main id="page-wrap">
+        <Credits />
         <div className={clsx(titleStyles, alignCenter)}><img src={logo} height={200}/><br/><b>so how's your tech life</b></div>
         <div className={appStyles}>
-          <div>{buttons}</div>
+          <div>{buttons }</div>
           <div className={questionStyles}>
             <Card key={currCard} styleName={bigCardStyles} question={currCard} contentTagsOn={contentTagsOn}/>
           </div>
           <CardHistory cardHistory={cardHistory} />
 
           <div className={alignCenter}>
+            {playersThisRound.length >= 2 ? <div>
               <button className={nextCardButtonStlyes} onClick={() => handleNextCard()}>
                 next card
               </button>
               <button className={nextCardButtonStlyes} onClick={() => handleNextCard(true)}>
                 skip card
               </button>
-
+            </div> : ""}
             <div>
               <h3>Level {levelKeyToInt[currLevel]}, Round {currRound}</h3>
-              <h3>Turn: {playersThisRound.length % 2 == 0 ? playersThisRound[0] + " and " + playersThisRound[1] : playersThisRound[0] + ", " + playersThisRound[1] + " and " + playersThisRound[2]}</h3>
+              { (playersThisRound.length < 2 && levelKeyToInt[currLevel] == 1) && 
+                  <div>Please add some players to begin!</div>
+              }
+              { (playersThisRound.length >= 2) &&
+                  (<div><h3>Turn: { playersThisRound.length % 2 == 0 ? playersThisRound[0] + " asks " + playersThisRound[1] : playersThisRound[0] + ", " + playersThisRound[1] + " and " + playersThisRound[2] }</h3></div>)
+              }
             </div>
           </div>
         </div>

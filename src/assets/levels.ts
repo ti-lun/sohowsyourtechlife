@@ -25,7 +25,7 @@ export const levelOne = [
   "What's a good book (doesn't have to be tech related) that you would recommend?",
   "What kind of music do you like listening to?  You could name some genres, or some artists.",
   "Are you more into a small startup, midsize, or large company vibe?  Why?",
-  "You seem like a …. (insert job here–encouraging responses to keep it to fields/industries rather than roles like engineer or PM, such as \"fintech startup person\" or \"digital creative at Adobe\")",
+  "People think I do (blank) but I actually do ...",
 ];
 
 export const levelTwo = [
@@ -109,7 +109,7 @@ export const levelThree = [
   "What is an insecurity you have regarding your career/your job?",
   "What voices in tech do you wish you knew more about/wish were being uplifted more?",
   "blue*What do you think of your company's (or past companies') Diversity and Inclusion policies or orgs?",
-  "What are your thoughts/experiences on Employee Resources Groups (ERGs)?",
+  "What are your thoughts/experiences on Employee Resources Groups (ERGs) if your company has them?",
   "Have you thought about quitting tech?  Why?  What kept you going, if you're still in it?",
   "Do you think tech has a low or high barrier to entry?",
   "What is one thing, if the industry could implement it right now, that you would really want to see happen?",
@@ -119,8 +119,8 @@ export const levelThree = [
   "blue*Has the way a company handled a disability (mental, psychological, or physical) you have helped or harmed your experience?  (This could be not applicable to you.)",
   "blue*Have you ever had to use drugs to compete at work?",
   "Do you feel comfortable sharing about your partner or partners to your coworkers?  Why or why not?",
-  "How have your experiences with more senior engineers than you been?",
-  "How have your experiences with more junior engineers than you been?",
+  "How have your experiences with more senior coworkers than you been?",
+  "How have your experiences with more junior coworkers than you been?",
   "Do you feel your experiences have been generally supportive in resources, team solidarity, knowledge transfer, etc.?",
 ];
 
